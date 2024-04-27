@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.editFile = exports.getFileEditPage = exports.deleteFile = exports.uploadFile = exports.getFileUploadPage = exports.getHomepage = void 0;
+exports.postDelelteAccount = exports.getDelelteAccount = exports.editFile = exports.getFileEditPage = exports.deleteFile = exports.uploadFile = exports.getFileUploadPage = exports.getHomepage = void 0;
 // Controller function for the homepage route
 const getHomepage = (req, res, next) => {
     res.json({ sayit: "oh whot ssup" });
@@ -31,3 +31,7 @@ const editFile = (req, res, next) => {
     // Logic to handle file edit
 };
 exports.editFile = editFile;
+const getDelelteAccount = (req, res, next) => { };
+exports.getDelelteAccount = getDelelteAccount;
+const postDelelteAccount = (req, res, next) => { };
+exports.postDelelteAccount = postDelelteAccount;

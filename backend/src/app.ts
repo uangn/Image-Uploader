@@ -14,7 +14,7 @@ app.use(cors());
 
 //routes middlewares
 app.use(appRoutes);
-app.use(authRoute);
+app.use("/auth", authRoute);
 
 mongoose.connect(process.env.URI as string).then((result) => {
   console.log("connected to Mongo Database");

@@ -15,7 +15,7 @@ app.use(body_parser_1.default.json());
 app.use((0, cors_1.default)());
 //routes middlewares
 app.use(app_routes_1.default);
-app.use(auth_routes_1.default);
+app.use("/auth", auth_routes_1.default);
 mongoose_1.default.connect(process.env.URI).then((result) => {
     console.log("connected to Mongo Database");
     app.listen(8080, () => console.log("listen on port 8080"));

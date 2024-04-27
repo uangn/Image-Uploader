@@ -1,0 +1,50 @@
+.login {
+  background-color: white;
+  padding: 3rem;
+  border-radius: 10px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form input {
+  width: 200px;
+  padding: 5px;
+  font-size: 1.2rem;
+  margin-left: 2rem;
+}
+
+.form div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.form label {
+  font-weight: bold;
+}
+
+.button {
+  border-radius: 15px;
+  padding: 0.5rem 1rem;
+  background-color: rgb(255, 175, 27);
+  color: white;
+  border: none;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: rgb(255, 213, 135);
+  color: white;
+}
+form div.btn {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}

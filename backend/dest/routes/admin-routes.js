@@ -27,19 +27,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const appController = __importStar(require("../controller/appController"));
+const adminController = __importStar(require("../controller/adminController"));
 const router = express_1.default.Router();
-// Homepage route
-router.get("/", appController.getHomepage);
-// File upload routes
-router.get("/file-upload", appController.getFileUploadPage);
-router.post("/file-upload", appController.uploadFile);
-// File delete route
-router.delete("/file-delete", appController.deleteFile);
-// File edit routes
-router.get("/file-edit", appController.getFileEditPage);
-router.put("/file-edit", appController.editFile);
-// Delete account
-router.get("/delete-account", appController.getDelelteAccount);
-router.post("/delete-account", appController.postDelelteAccount);
+// GET /
+router.get("/", adminController.getIndex);
+// POST /
+router.post("/", adminController.postIndex);
+// GET /view-users
+router.get("/view-users", adminController.getViewUsers);
+// DELETE /delete-user
+router.delete("/delete-user", adminController.deleteDeleteUser);
+// DELETE /image
+router.delete("/image", adminController.deleteImage);
 exports.default = router;
