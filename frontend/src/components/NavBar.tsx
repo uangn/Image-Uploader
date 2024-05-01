@@ -7,8 +7,6 @@ const NavBar = () => {
   const location = useLocation();
   const ctx = useAuthCheck();
 
-  useAuthCheck();
-
   const handleClick = (title: string) => {
     document.title = title;
   };
