@@ -1,19 +1,13 @@
-import { useContext, useEffect } from "react";
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import styles from "./css/NavBar.module.css";
-import AuthContext from "../stores/authContext";
+
+import useAuthCheck from "../hooks/use-auth-check";
 
 const NavBar = () => {
   const location = useLocation();
-  const navigate = useNavigate();
-  const ctx = useContext(AuthContext);
+  const ctx = useAuthCheck();
 
-  useEffect(() => {
-    document.title = "Image Uploader";
-    if (!ctx.user) {
-      navigate("/auth/login");
-    }
-  }, []);
+  useAuthCheck();
 
   const handleClick = (title: string) => {
     document.title = title;
@@ -70,7 +64,13 @@ const NavBar = () => {
           ) : (
             <div className={styles.authentication}>
               <li>
-                <Link to={"/auth/login"} onClick={() => ctx.setUser(null)}>
+                <Link
+                  to={"/auth/login"}
+                  onClick={() => {
+                    localStorage.removeItem("token");
+                    ctx.setUser(null);
+                  }}
+                >
                   Log out
                 </Link>
               </li>

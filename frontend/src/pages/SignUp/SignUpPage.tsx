@@ -47,7 +47,11 @@ const SignUpPage = () => {
 
   return (
     <div className={styles["sign-up"]}>
-      <h1 style={{ textAlign: "center", marginBottom: "3rem" }}>Sign up</h1>
+      <h1
+        style={{ textAlign: "center", marginBottom: "3rem", color: "orange" }}
+      >
+        Sign up
+      </h1>
       <Form
         onSubmit={submitHandler}
         action="/"
@@ -66,7 +70,18 @@ const SignUpPage = () => {
           <label htmlFor="repeat">Repeat Password</label>
           <input type="password" name="repeat" />
         </div>
-        {errPw && <p style={{ color: "red" }}>{errText}</p>}
+        {errPw && (
+          <p
+            style={{
+              color: "red",
+              textAlign: "center",
+              marginTop: "-1rem",
+              marginBottom: "3rem",
+            }}
+          >
+            {errText}
+          </p>
+        )}
         <div className={styles.btn}>
           <button type="submit" className={styles.button}>
             Sign up

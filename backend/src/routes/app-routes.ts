@@ -4,7 +4,7 @@ import * as appController from "../controller/appController";
 const router = express.Router();
 
 // Homepage route
-router.get("/", appController.getHomepage);
+router.get("/:username", appController.getHomepage);
 
 // File upload routes
 router.get("/file-upload", appController.getFileUploadPage);

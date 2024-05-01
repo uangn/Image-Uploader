@@ -28,9 +28,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const authController = __importStar(require("../controller/authController"));
+const is_auth_1 = __importDefault(require("../middlewares/is-auth"));
 const router = express_1.default.Router();
 // Routes for login
-router.get("/login", authController.getLoginPage);
+router.get("/login", is_auth_1.default, authController.getLoginPage);
 router.post("/login", authController.login);
 // Routes for sign-up
 router.get("/sign-up", authController.getSignUpPage);

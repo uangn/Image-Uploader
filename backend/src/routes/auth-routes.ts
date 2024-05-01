@@ -1,10 +1,11 @@
 import express from "express";
 import * as authController from "../controller/authController";
+import isAuth from "../middlewares/is-auth";
 
 const router = express.Router();
 
 // Routes for login
-router.get("/login", authController.getLoginPage);
+router.get("/login", isAuth, authController.getLoginPage);
 router.post("/login", authController.login);
 
 // Routes for sign-up

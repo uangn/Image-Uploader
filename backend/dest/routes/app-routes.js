@@ -30,7 +30,7 @@ const express_1 = __importDefault(require("express"));
 const appController = __importStar(require("../controller/appController"));
 const router = express_1.default.Router();
 // Homepage route
-router.get("/", appController.getHomepage);
+router.get("/:username", appController.getHomepage);
 // File upload routes
 router.get("/file-upload", appController.getFileUploadPage);
 router.post("/file-upload", appController.uploadFile);

@@ -7,7 +7,7 @@ import {
 import appRoutes from "./routes/appRoutes";
 import authRoutes from "./routes/authRoutes";
 import AuthContext from "./stores/authContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import User from "./models/User";
 
 const router = createBrowserRouter([appRoutes, authRoutes] as RouteObject[]);
