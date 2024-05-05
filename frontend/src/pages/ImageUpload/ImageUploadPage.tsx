@@ -1,14 +1,18 @@
 import React, { FormEventHandler, useContext } from "react";
 import AuthContext from "../../stores/authContext";
-import { Form, useRouteLoaderData } from "react-router-dom";
+import { Form, useNavigate, useRouteLoaderData } from "react-router-dom";
 import styles from "./ImageUpload.module.css";
 
 const ImageUploadPage = () => {
   const ctx = useContext(AuthContext);
+  const navigate = useNavigate();
   const loader = useRouteLoaderData("app-root") as {
     username: string;
     userID: string;
   };
+  if (!loader.userID) {
+    navigate("/auth/login");
+  }
 
   const upload: FormEventHandler = async (e) => {
     e.preventDefault();
@@ -16,13 +20,19 @@ const ImageUploadPage = () => {
     const fd = new FormData(e.target as HTMLFormElement);
     const entries = Object.fromEntries(fd.entries());
 
-    const postImage = fetch("http://localhost:8080/file-upload", {
+    const postImage = await fetch("http://localhost:8080/file-upload", {
       method: "POST",
-      // headers: {
-      //   "Content-Type": "application/json",
-      // },
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
       body: fd,
     });
+    if (!postImage.ok) {
+      const response = await postImage.json();
+      throw new Error(response.message);
+    }
+
+    navigate("/" + ctx.user.name);
 
     console.log(entries);
   };

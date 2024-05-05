@@ -28,9 +28,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const appController = __importStar(require("../controller/appController"));
+const is_auth_1 = __importDefault(require("../middlewares/is-auth"));
 const router = express_1.default.Router();
-// Homepage route
 router.get("/:username", appController.getHomepage);
+router.use(is_auth_1.default);
+// Homepage route
 // File upload routes
 router.get("/file-upload", appController.getFileUploadPage);
 router.post("/file-upload", appController.uploadFile);

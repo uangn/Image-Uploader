@@ -18,10 +18,10 @@ const ImageSchema = new Schema({
     required: true,
   },
   reaction: {
-    like: { amount: Number, require: true },
-    cute: { amount: Number, require: true },
-    hot: { amount: Number, require: true },
-    cool: { amount: Number, require: true },
+    like: { type: Number, required: true },
+    cute: { type: Number, required: true },
+    hot: { type: Number, required: true },
+    cool: { type: Number, required: true },
   },
   comment: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
 });

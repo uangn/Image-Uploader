@@ -5,8 +5,8 @@ import isAuth from "../middlewares/is-auth";
 const router = express.Router();
 
 // Routes for login
-router.get("/login", isAuth, authController.getLoginPage);
 router.post("/login", authController.login);
+router.get("/login", isAuth, authController.getLoginPage);
 
 // Routes for sign-up
 router.get("/sign-up", authController.getSignUpPage);

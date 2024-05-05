@@ -64,7 +64,6 @@ const LoginPage = () => {
     }
 
     const user = await response.json();
-    console.log(user.token);
     localStorage.setItem("token", user.token);
     setStopmoving(false);
     ctx.setUser({ name: user.username, userID: user.userId });

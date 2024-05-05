@@ -1,10 +1,12 @@
 import express from "express";
 import * as appController from "../controller/appController";
+import isAuth from "../middlewares/is-auth";
 
 const router = express.Router();
+router.get("/:username", appController.getHomepage);
+router.use(isAuth);
 
 // Homepage route
-router.get("/:username", appController.getHomepage);
 
 // File upload routes
 router.get("/file-upload", appController.getFileUploadPage);

@@ -12,7 +12,7 @@ const auth = (req, res, next) => {
         decodedToken = jsonwebtoken_1.default.verify(tokeen, "mayakepatum");
     }
     catch (err) {
-        return res.status(404).json("not login");
+        return res.status(409).json({ message: "not login", status: 4092 });
     }
     req.userId = decodedToken.userId;
     req.username = decodedToken.username;

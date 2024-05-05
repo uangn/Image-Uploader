@@ -4,9 +4,13 @@ import React from "react";
 import HomePage from "../pages/Home/HomePage";
 import ImageUploadPage from "../pages/ImageUpload/ImageUploadPage";
 import UserPage from "../pages/UserPage/UserPage";
+import ErrorPage from "../pages/Errors/ErrorPage";
 
 const appLoader: LoaderFunction = async () => {
   const jwtToken = localStorage.getItem("token");
+  if (!jwtToken) {
+    throw new Error("Not logged in");
+  }
   const response = await fetch("http://localhost:8080/auth/login", {
     headers: {
       Authorization: "Bearer " + jwtToken,
@@ -26,6 +30,7 @@ const appRoutes: RouteObject = {
   element: <NavBar />,
   loader: appLoader,
   id: "app-root",
+  errorElement: <ErrorPage />,
   children: [
     { index: true, element: <HomePage /> },
     { path: ":username", element: <UserPage /> },
