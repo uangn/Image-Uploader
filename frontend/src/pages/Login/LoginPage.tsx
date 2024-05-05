@@ -25,13 +25,16 @@ const LoginPage = () => {
       })
         .then((res) => {
           if (res.ok) {
-            return res.json() as unknown as { username: string };
+            return res.json() as unknown as {
+              username: string;
+              userID: string;
+            };
           } else {
             throw new Error("Please login to continue");
           }
         })
         .then((user) => {
-          ctx.setUser({ name: user?.username! });
+          ctx.setUser({ name: user?.username!, userID: user.userID });
           navigate("/" + user?.username);
         })
         .catch((err: Error) => {
@@ -64,7 +67,7 @@ const LoginPage = () => {
     console.log(user.token);
     localStorage.setItem("token", user.token);
     setStopmoving(false);
-    ctx.setUser({ name: user.username });
+    ctx.setUser({ name: user.username, userID: user.userId });
     navigate("/" + user.username);
   };
 

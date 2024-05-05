@@ -22,7 +22,7 @@ function App() {
         setUser,
       }}
     >
-      <RouterProvider router={router} />;
+      <RouterProvider router={router} />
     </AuthContext.Provider>
   );
 }

@@ -6,7 +6,7 @@ import AuthRequest from "models/AuthRequest";
 
 export const getLoginPage: RequestHandler = (req: AuthRequest, res, next) => {
   if (req.userId) {
-    res.status(200).json({ username: req.username });
+    res.status(200).json({ username: req.username, userID: req.userId });
   } else {
     res.status(401).json({ message: "Please login" });
   }

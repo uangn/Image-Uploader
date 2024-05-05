@@ -13,7 +13,9 @@ const getFileUploadPage = (req, res, next) => {
 exports.getFileUploadPage = getFileUploadPage;
 // Controller function for handling file upload
 const uploadFile = (req, res, next) => {
-    // Logic to handle file upload
+    console.log(req.body);
+    console.log(req.file);
+    res.status(200).json({});
 };
 exports.uploadFile = uploadFile;
 // Controller function for handling file deletion

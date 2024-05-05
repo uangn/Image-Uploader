@@ -10,9 +10,14 @@ const ImageSchema = new Schema({
         type: String,
         required: true,
     },
+    title: String,
     postByUser: {
         type: Schema.Types.ObjectId,
         ref: "User",
+    },
+    content: {
+        type: String,
+        required: true,
     },
     reaction: {
         like: { amount: Number, require: true },

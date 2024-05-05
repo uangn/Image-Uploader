@@ -17,8 +17,11 @@ const useAuthCheck = () => {
             },
           });
           if (response.ok) {
-            const user = (await response.json()) as { username: string };
-            ctx.setUser({ name: user?.username! });
+            const user = (await response.json()) as {
+              username: string;
+              userID: string;
+            };
+            ctx.setUser({ name: user?.username!, userID: user.userID });
           } else {
             throw new Error("w");
           }

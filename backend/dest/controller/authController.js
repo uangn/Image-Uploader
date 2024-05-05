@@ -18,7 +18,7 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const getLoginPage = (req, res, next) => {
     if (req.userId) {
-        res.status(200).json({ username: req.username });
+        res.status(200).json({ username: req.username, userID: req.userId });
     }
     else {
         res.status(401).json({ message: "Please login" });

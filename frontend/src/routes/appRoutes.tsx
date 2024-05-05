@@ -1,14 +1,31 @@
-import { RouteObject } from "react-router-dom";
+import { LoaderFunction, RouteObject } from "react-router-dom";
 import NavBar from "../components/NavBar";
 import React from "react";
 import HomePage from "../pages/Home/HomePage";
 import ImageUploadPage from "../pages/ImageUpload/ImageUploadPage";
 import UserPage from "../pages/UserPage/UserPage";
 
+const appLoader: LoaderFunction = async () => {
+  const jwtToken = localStorage.getItem("token");
+  const response = await fetch("http://localhost:8080/auth/login", {
+    headers: {
+      Authorization: "Bearer " + jwtToken,
+    },
+  });
+  if (!response.ok) {
+    return { message: "Not logged in" };
+  }
+
+  const data = await response.json();
+
+  return data;
+};
+
 const appRoutes: RouteObject = {
   path: "/",
   element: <NavBar />,
-  loader: undefined,
+  loader: appLoader,
+  id: "app-root",
   children: [
     { index: true, element: <HomePage /> },
     { path: ":username", element: <UserPage /> },
