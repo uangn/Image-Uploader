@@ -7,6 +7,10 @@ export const getHomepage: RequestHandler = async (req, res, next) => {
   const { username } = req.params;
 
   const user = await User.findOne({ username: username });
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
   const imgs = await Image.find({ postByUser: user?._id }).sort({ _id: -1 }); // sort by latest);
   console.log(imgs);
 

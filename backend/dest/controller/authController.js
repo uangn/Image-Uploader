@@ -59,6 +59,11 @@ const signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
         res.status(403).json({ message: "Name already used" });
         return;
     }
+    data.username = data.username.trim();
+    if (data.username.length < 8) {
+        res.status(403).json({ message: "Name too short" });
+        return;
+    }
     if (data.password.length >= 12) {
         const salt = yield bcrypt_1.default.genSalt(10);
         const hashedPassword = yield bcrypt_1.default.hash(data.password, salt);

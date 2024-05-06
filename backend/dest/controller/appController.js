@@ -19,6 +19,9 @@ const User_1 = __importDefault(require("../models/User"));
 const getHomepage = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { username } = req.params;
     const user = yield User_1.default.findOne({ username: username });
+    if (!user) {
+        return res.status(404).json({ message: "User not found" });
+    }
     const imgs = yield Image_1.default.find({ postByUser: user === null || user === void 0 ? void 0 : user._id }).sort({ _id: -1 }); // sort by latest);
     console.log(imgs);
     res.status(200).json({ message: "Fetch images", images: imgs });

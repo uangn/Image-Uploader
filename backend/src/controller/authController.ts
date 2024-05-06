@@ -54,6 +54,12 @@ export const signup: RequestHandler = async (req, res, next) => {
     return;
   }
 
+  data.username = data.username.trim();
+  if (data.username.length < 8) {
+    res.status(403).json({ message: "Name too short" });
+    return;
+  }
+
   if (data.password.length >= 12) {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(data.password, salt);
