@@ -1,11 +1,18 @@
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLoaderData, useLocation } from "react-router-dom";
 import styles from "./css/NavBar.module.css";
 
 import useAuthCheck from "../hooks/use-auth-check";
 
+const currentStyle: React.CSSProperties = {
+  color: "black",
+  textDecoration: "underline",
+};
+
 const NavBar = () => {
   const location = useLocation();
   const ctx = useAuthCheck();
+
+  const appLoaderData = useLoaderData() as { username: string; userID: string };
 
   const handleClick = (title: string) => {
     document.title = title;
@@ -19,20 +26,32 @@ const NavBar = () => {
             <li>
               <Link
                 style={
-                  location.pathname === "/" ? { color: "black" } : undefined
+                  location.pathname === "/" + appLoaderData.username
+                    ? { backgroundColor: "black", padding: "100px" }
+                    : undefined
                 }
+                to={"/" + appLoaderData.username}
+                onClick={() => handleClick("Home")}
+              >
+                👤
+              </Link>
+            </li>
+            <li>
+              <Link
+                style={location.pathname === "/" ? currentStyle : undefined}
                 to="/"
                 onClick={() => handleClick("Home")}
               >
-                Home
+                Search
               </Link>
             </li>
+
             <li>
               {" "}
               <Link
                 style={
                   location.pathname === "/image-upload"
-                    ? { color: "black" }
+                    ? currentStyle
                     : undefined
                 }
                 to="/image-upload"

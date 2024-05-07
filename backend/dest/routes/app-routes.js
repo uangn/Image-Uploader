@@ -32,12 +32,14 @@ const is_auth_1 = __importDefault(require("../middlewares/is-auth"));
 const router = express_1.default.Router();
 router.get("/:username", appController.getHomepage);
 router.use(is_auth_1.default);
-// Homepage route
+// Homepage rout
 // File upload routes
 router.get("/file-upload", appController.getFileUploadPage);
 router.post("/file-upload", appController.uploadFile);
 // File delete route
 router.delete("/file-delete", appController.deleteFile);
+// detail
+router.get("/:username/:title", appController.getImageDetail);
 // File edit routes
 router.get("/file-edit", appController.getFileEditPage);
 router.put("/file-edit", appController.editFile);

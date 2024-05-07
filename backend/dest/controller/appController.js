@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postDelelteAccount = exports.getDelelteAccount = exports.editFile = exports.getFileEditPage = exports.deleteFile = exports.uploadFile = exports.getFileUploadPage = exports.getHomepage = void 0;
+exports.postDelelteAccount = exports.getDelelteAccount = exports.editFile = exports.getFileEditPage = exports.deleteFile = exports.getImageDetail = exports.uploadFile = exports.getFileUploadPage = exports.getHomepage = void 0;
 const Image_1 = __importDefault(require("../models/Image"));
 const User_1 = __importDefault(require("../models/User"));
 // Controller function for the homepage route
@@ -34,11 +34,14 @@ const getFileUploadPage = (req, res, next) => {
 exports.getFileUploadPage = getFileUploadPage;
 // Controller function for handling file upload
 const uploadFile = (req, res, next) => {
+    // console.log(req.body);
+    // console.log(req.file);
     var _a;
-    console.log(req.body);
-    console.log(req.file);
     if (!req.file) {
         return res.status(401).json({ message: "Image missing" });
+    }
+    if (req.body.title.trim().length < 5) {
+        return res.status(401).json({ message: "Missing title" });
     }
     const imageURL = "http://localhost:8080/images/" + ((_a = req.file) === null || _a === void 0 ? void 0 : _a.filename);
     const newImage = new Image_1.default({
@@ -58,6 +61,21 @@ const uploadFile = (req, res, next) => {
     res.status(200).json({});
 };
 exports.uploadFile = uploadFile;
+const getImageDetail = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { username, title } = req.params;
+    const user = yield User_1.default.findOne({ username: username });
+    if (!user) {
+        return res.status(404).json({ message: "User not found" });
+    }
+    const imageDetail = yield Image_1.default.find({ postByUser: user._id, title: title });
+    if (imageDetail.length === 0) {
+        res.status(401).json({ message: "This doesn't exist or was deleted" });
+    }
+    else {
+        res.status(200).json({ imageDetail: imageDetail });
+    }
+});
+exports.getImageDetail = getImageDetail;
 // Controller function for handling file deletion
 const deleteFile = (req, res, next) => {
     // Logic to handle file deletion

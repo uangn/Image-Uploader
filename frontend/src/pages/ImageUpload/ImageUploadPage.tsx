@@ -1,4 +1,4 @@
-import React, { FormEventHandler, useContext } from "react";
+import React, { FormEventHandler, useContext, useState } from "react";
 import AuthContext from "../../stores/authContext";
 import { Form, useNavigate, useRouteLoaderData } from "react-router-dom";
 import styles from "./ImageUpload.module.css";
@@ -10,6 +10,9 @@ const ImageUploadPage = () => {
     username: string;
     userID: string;
   };
+
+  const [error, setError] = useState("");
+
   if (!loader.userID) {
     navigate("/auth/login");
   }
@@ -29,41 +32,44 @@ const ImageUploadPage = () => {
     });
     if (!postImage.ok) {
       const response = await postImage.json();
-      throw new Error(response.message);
+      setError(response.message);
+    } else {
+      navigate("/" + ctx.user.name);
+
+      console.log(entries);
     }
-
-    navigate("/" + ctx.user.name);
-
-    console.log(entries);
   };
   return (
-    <div>
+    <div className={styles.page}>
       <h1>
         Hello from Image Upload{" "}
-        {ctx.user ? ctx.user.name : (loader?.username as string)}
+        {ctx.user
+          ? ctx.user.name.replace(" ", "_")
+          : (loader?.username.replace(" ", "_") as string)}
       </h1>
       <Form
         onSubmit={upload}
         className={styles.form}
         encType="multipart/form-data"
       >
-        <div>
+        <div className={styles.inputfield}>
           <label htmlFor="title">Title</label>
           <input type="text" required name="title" />
         </div>
-        <div>
+        <div className={styles.inputfield}>
           <label htmlFor="imageURL">Image</label>
-          <input type="file" name="imageURL" />
+          <input type="file" name="imageURL" accept="image/*" />
         </div>
-        <div>
+        <div className={styles.contentfield}>
           <label htmlFor="content">Content</label>
-          <textarea name="content"></textarea>
+          <textarea name="content" className={styles.content}></textarea>
         </div>
         <input
           type="hidden"
           name="userID"
           value={loader.userID.toString() || "None"}
         />
+        <p style={{ color: "red" }}>{error}</p>
         <button type="submit">Upload</button>
       </Form>
     </div>

@@ -1,0 +1,26 @@
+.page {
+}
+.page h1 {
+  text-align: center;
+}
+
+.content-area {
+  display: flex;
+  width: 80%;
+  flex-direction: row;
+  padding: 2rem;
+}
+
+.content-area img {
+  width: 50%;
+  height: fit-content;
+  display: block;
+}
+.content {
+  margin-left: 3rem;
+  width: 130%;
+}
+
+.content p {
+  width: 130%;
+}

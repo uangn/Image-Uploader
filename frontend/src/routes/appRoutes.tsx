@@ -5,6 +5,7 @@ import HomePage from "../pages/Home/HomePage";
 import ImageUploadPage from "../pages/ImageUpload/ImageUploadPage";
 import UserPage from "../pages/UserPage/UserPage";
 import ErrorPage from "../pages/Errors/ErrorPage";
+import ImageDetailPage from "../pages/ImageDetail/ImageDetailPage";
 
 const appLoader: LoaderFunction = async () => {
   const jwtToken = localStorage.getItem("token");
@@ -35,6 +36,7 @@ const appRoutes: RouteObject = {
     { index: true, element: <HomePage /> },
     { path: ":username", element: <UserPage /> },
     { path: "image-upload", element: <ImageUploadPage /> },
+    { path: ":username/:title", element: <ImageDetailPage /> },
     { path: "*", element: <h1>Nopage</h1> },
   ],
 };

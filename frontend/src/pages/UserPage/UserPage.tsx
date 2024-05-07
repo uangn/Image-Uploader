@@ -3,6 +3,7 @@ import styles from "./UserPage.module.css";
 import { useNavigate, useParams } from "react-router-dom";
 import AuthContext from "../../stores/authContext";
 import Image from "../../models/Image";
+import ImageContainer from "./ImageContainer";
 
 const UserPage = () => {
   const { username } = useParams();
@@ -40,15 +41,9 @@ const UserPage = () => {
 
   return (
     <div className={styles.page}>
-      <h1>{username}</h1>
+      <h1>#{username?.replace(" ", "_")}</h1>
       {error.length <= 0 ? (
-        <div>
-          {(images?.length as number) > 0 ? (
-            images?.map((image) => <img src={image.imageURL} alt="user" />)
-          ) : (
-            <p>{username} hasn't posted anything</p>
-          )}
-        </div>
+        <ImageContainer images={images} />
       ) : (
         <h1>{error}</h1>
       )}
