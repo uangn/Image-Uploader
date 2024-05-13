@@ -9,7 +9,7 @@ const ImageCard = (props: properties) => {
   const navigate = useNavigate();
   const viewImage: MouseEventHandler = (e) => {
     console.log(props.image._id.toString());
-    navigate(location.pathname + "/" + props.image.title);
+    navigate(location.pathname + "/" + props.id);
   };
 
   return (
@@ -19,12 +19,13 @@ const ImageCard = (props: properties) => {
       onMouseEnter={() => setInformation(true)}
       onMouseLeave={() => setInformation(false)}
     >
-      <img src={props.image.imageURL} alt="Oh hoy" />
+      <img src={props.image.imageURL} alt="" />
       {information && <div className={styles.drop}></div>}
     </div>
   );
 };
 interface properties {
+  id: string;
   image: Image;
 }
 export default ImageCard;

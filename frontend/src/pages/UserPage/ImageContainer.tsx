@@ -8,7 +8,11 @@ const ImageContainer = (props: properties) => {
     <div className={styles["image-container"]}>
       {props.images && props.images.length > 0 ? (
         props.images?.map((image) => (
-          <ImageCard key={image._id.toString()} image={image} />
+          <ImageCard
+            key={image._id.toString()}
+            id={image._id.toString()}
+            image={image}
+          />
         ))
       ) : (
         <>no image</>

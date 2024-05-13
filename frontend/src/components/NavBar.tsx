@@ -27,7 +27,11 @@ const NavBar = () => {
               <Link
                 style={
                   location.pathname === "/" + appLoaderData.username
-                    ? { backgroundColor: "black", padding: "100px" }
+                    ? {
+                        backgroundColor: "white",
+                        padding: "10px",
+                        borderRadius: "50%",
+                      }
                     : undefined
                 }
                 to={"/" + appLoaderData.username}

@@ -24,3 +24,53 @@
 .content p {
   width: 130%;
 }
+
+.comments {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.reaction {
+  display: flex;
+  width: 70%;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 5rem;
+  margin-left: 3rem;
+}
+
+.reaction button {
+  padding: 5px;
+  text-align: left;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  color: white;
+  width: 25%;
+}
+.like {
+  background-color: rgb(38, 132, 255);
+}
+.cute {
+  background-color: rgb(255, 144, 163);
+}
+.hot {
+  background-color: rgb(255, 0, 43);
+}
+.cool {
+  background-color: gold;
+}
+
+.comment-area {
+  width: 80%;
+  padding: rem;
+  background-color: aqua;
+}
+
+.comment-area textarea {
+  width: 100%;
+  padding: 1rem;
+}

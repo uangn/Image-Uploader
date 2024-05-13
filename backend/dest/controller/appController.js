@@ -23,7 +23,6 @@ const getHomepage = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         return res.status(404).json({ message: "User not found" });
     }
     const imgs = yield Image_1.default.find({ postByUser: user === null || user === void 0 ? void 0 : user._id }).sort({ _id: -1 }); // sort by latest);
-    console.log(imgs);
     res.status(200).json({ message: "Fetch images", images: imgs });
 });
 exports.getHomepage = getHomepage;
@@ -62,12 +61,14 @@ const uploadFile = (req, res, next) => {
 };
 exports.uploadFile = uploadFile;
 const getImageDetail = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { username, title } = req.params;
+    const { username, imageId } = req.params;
     const user = yield User_1.default.findOne({ username: username });
     if (!user) {
         return res.status(404).json({ message: "User not found" });
     }
-    const imageDetail = yield Image_1.default.find({ postByUser: user._id, title: title });
+    const imageDetail = yield Image_1.default.find({
+        _id: imageId,
+    });
     if (imageDetail.length === 0) {
         res.status(401).json({ message: "This doesn't exist or was deleted" });
     }
@@ -82,14 +83,28 @@ const deleteFile = (req, res, next) => {
 };
 exports.deleteFile = deleteFile;
 // Controller function for rendering the file edit page
-const getFileEditPage = (req, res, next) => {
-    // Logic to render the file edit page
-};
+const getFileEditPage = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    //
+    res.json({});
+});
 exports.getFileEditPage = getFileEditPage;
 // Controller function for handling file edit
-const editFile = (req, res, next) => {
-    // Logic to handle file edit
-};
+const editFile = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    if (!req.file) {
+        return res.status(401).json({ message: "Image missing" });
+    }
+    if (req.body.title.trim().length < 5) {
+        return res.status(401).json({ message: "Missing title" });
+    }
+    const imageURL = "http://localhost:8080/images/" + ((_a = req.file) === null || _a === void 0 ? void 0 : _a.filename);
+    yield Image_1.default.findOneAndUpdate({ _id: req.body.imageId }, {
+        title: req.body.title,
+        content: req.body.content,
+        imageURL: imageURL,
+    });
+    res.status(200).json({});
+});
 exports.editFile = editFile;
 const getDelelteAccount = (req, res, next) => { };
 exports.getDelelteAccount = getDelelteAccount;

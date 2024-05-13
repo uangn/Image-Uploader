@@ -37,8 +37,6 @@ const UserPage = () => {
       });
   }, []);
 
-  console.log("Reach " + username);
-
   return (
     <div className={styles.page}>
       <h1>#{username?.replace(" ", "_")}</h1>

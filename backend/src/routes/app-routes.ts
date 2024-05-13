@@ -16,10 +16,10 @@ router.post("/file-upload", appController.uploadFile);
 router.delete("/file-delete", appController.deleteFile);
 
 // detail
-router.get("/:username/:title", appController.getImageDetail);
+router.get("/:username/:imageId", appController.getImageDetail);
 
 // File edit routes
-router.get("/file-edit", appController.getFileEditPage);
+router.get(":username/:imageId/file-edit", appController.getFileEditPage);
 router.put("/file-edit", appController.editFile);
 
 // Delete account
