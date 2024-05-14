@@ -3,6 +3,7 @@ import User from "../models/User";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import AuthRequest from "models/AuthRequest";
+import "dotenv/config";
 
 export const getLoginPage: RequestHandler = (req: AuthRequest, res, next) => {
   if (req.userId) {
@@ -30,7 +31,7 @@ export const login: RequestHandler = async (req, res, next) => {
 
   const token = jwt.sign(
     { username: user.username, userId: user._id.toString() },
-    "mayakepatum",
+    process.env.JWT_SECRET as string,
     { expiresIn: "5 days" }
   );
   res.status(200).json({
@@ -42,6 +43,7 @@ export const login: RequestHandler = async (req, res, next) => {
 
 export const getSignUpPage: RequestHandler = (req, res, next) => {
   // Implementation for handling the sign-up page request
+
   res.json({ hi: "ho" });
 };
 

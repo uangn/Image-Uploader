@@ -24,6 +24,21 @@ const EditImage = () => {
     userID: string;
   };
   useEffect(() => {
+    async function fetchUser() {
+      const response = await fetch(
+        `http://localhost:8080/${username}/${imageId}/file-edit`,
+        {
+          headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+        }
+      );
+      if (!response.ok) {
+        navigate(`/${username}/${imageId}`);
+      } else {
+        console.log(response.status);
+      }
+    }
+    fetchUser();
+
     fetch(`http://localhost:8080/${username}/${imageId || "oho"}`, {
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
@@ -67,6 +82,7 @@ const EditImage = () => {
   };
   return (
     <div className={styles.page}>
+      <h3 style={{ color: "red", textAlign: "center" }}>{error}</h3>
       <h1>
         Hello from Image Upload{" "}
         {ctx.user

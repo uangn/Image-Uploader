@@ -41,7 +41,7 @@ router.delete("/file-delete", appController.deleteFile);
 // detail
 router.get("/:username/:imageId", appController.getImageDetail);
 // File edit routes
-router.get(":username/:imageId/file-edit", appController.getFileEditPage);
+router.get("/:username/:imageId/file-edit", appController.getFileEditPage);
 router.put("/file-edit", appController.editFile);
 // Delete account
 router.get("/delete-account", appController.getDelelteAccount);

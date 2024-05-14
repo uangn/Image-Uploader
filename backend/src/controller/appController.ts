@@ -2,6 +2,7 @@ import { RequestHandler } from "express";
 import Image from "../models/Image";
 import User from "../models/User";
 import mongoose from "mongoose";
+import AuthRequest from "models/AuthRequest";
 
 // Controller function for the homepage route
 export const getHomepage: RequestHandler = async (req, res, next) => {
@@ -23,9 +24,14 @@ export const getFileUploadPage: RequestHandler = (req, res, next) => {
 };
 
 // Controller function for handling file upload
-export const uploadFile: RequestHandler = (req, res, next) => {
+export const uploadFile: RequestHandler = (req: AuthRequest, res, next) => {
   // console.log(req.body);
   // console.log(req.file);
+  if (req.userId !== req.body.userID) {
+    return res
+      .status(403)
+      .json({ message: "You can not post your image to other user account" });
+  }
 
   if (!req.file) {
     return res.status(401).json({ message: "Image missing" });
@@ -73,21 +79,52 @@ export const getImageDetail: RequestHandler = async (req, res, next) => {
 };
 
 // Controller function for handling file deletion
-export const deleteFile: RequestHandler = (req, res, next) => {
+export const deleteFile: RequestHandler = async (
+  req: AuthRequest,
+  res,
+  next
+) => {
   // Logic to handle file deletion
+  const userId = req.userId;
+  const imageId = req.get("imageId");
+  const image = await Image.findById(imageId);
+  if (image?.postByUser?.toString() !== userId) {
+    return res
+      .status(403)
+      .json({ message: "you are not allowed to delete image from other user" });
+  }
+  const deleteImage = await Image.findByIdAndDelete(imageId);
+
+  res.status(200).json({ message: "image was deleted" });
 };
 
 // Controller function for rendering the file edit page
-export const getFileEditPage: RequestHandler = async (req, res, next) => {
-  //
-  res.json({});
+export const getFileEditPage: RequestHandler = async (
+  req: AuthRequest,
+  res,
+  next
+) => {
+  const userId = req.userId;
+  const { username, imageId } = req.params;
+  const user = (await User.findOne({ username: username })) || { _id: "None" };
+  if (userId !== user?._id.toString()) {
+    return res
+      .status(403)
+      .json({ message: "You are not allowed to edit images from other user" });
+  }
+  res.status(200).json({});
 };
 
 // Controller function for handling file edit
-export const editFile: RequestHandler = async (req, res, next) => {
-  if (!req.file) {
-    return res.status(401).json({ message: "Image missing" });
+export const editFile: RequestHandler = async (req: AuthRequest, res, next) => {
+  const image = await Image.findById(req.body.imageId);
+  if (req.body.userID !== image?.postByUser?.toString()) {
+    return res.status(403).json({ message: "Forbidden." });
   }
+  if (image?.postByUser?.toString() !== req.userId)
+    if (!req.file) {
+      return res.status(401).json({ message: "Image missing" });
+    }
 
   if (req.body.title.trim().length < 5) {
     return res.status(401).json({ message: "Missing title" });

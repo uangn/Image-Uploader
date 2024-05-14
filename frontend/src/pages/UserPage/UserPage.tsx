@@ -7,6 +7,7 @@ import ImageContainer from "./ImageContainer";
 
 const UserPage = () => {
   const { username } = useParams();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const ctx = useContext(AuthContext);
   const navigate = useNavigate();
   const [images, setImages] = useState<Image[]>();

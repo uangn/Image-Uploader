@@ -2,6 +2,7 @@ import React, { MouseEventHandler, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams, useRouteLoaderData } from "react-router-dom";
 import Image from "../../models/Image";
 import styles from "./ImageDetailPage.module.css";
+import { json } from "stream/consumers";
 
 const ImageDetailPage = () => {
   const { username, imageId } = useParams();
@@ -55,13 +56,43 @@ const ImageDetailPage = () => {
 
   const edit: MouseEventHandler = async (e) => {
     e.preventDefault();
+    const response = await fetch(
+      `http://localhost:8080/${username}/${imageId}/file-edit`,
+      {
+        headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+      }
+    );
 
-    navigate(`/${username}/${imageId}/image-edit`);
+    if (response.ok) {
+      navigate(`/${username}/${imageId}/image-edit`);
+    } else {
+      const eer = await response.json();
+      setError(eer.message);
+    }
+  };
+
+  const deleteImage: MouseEventHandler = async (e) => {
+    e.preventDefault();
+    const response = await fetch(`http://localhost:8080/file-delete`, {
+      method: "DELETE",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+        imageId: imageId!,
+      },
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      setError(error.message);
+    } else {
+      navigate(`/${username}`);
+    }
   };
 
   const allowEditting = username === loader.username;
   return (
     <div className={styles.page}>
+      <h3 style={{ color: "red", textAlign: "center" }}>{error}</h3>
       <h1>{image?.title}</h1>
       <div className={styles["content-area"]}>
         <img src={image?.imageURL} alt="No cap" />
@@ -71,7 +102,13 @@ const ImageDetailPage = () => {
           ))}
         </div>
       </div>
-      {allowEditting && <button onClick={edit}>Edit</button>}
+      {allowEditting && (
+        <div>
+          {" "}
+          <button onClick={edit}>Edit</button>
+          <button onClick={deleteImage}>Delete</button>
+        </div>
+      )}
 
       <section className={styles.comments}>
         <div className={styles.reaction}>

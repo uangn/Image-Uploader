@@ -16,6 +16,7 @@ exports.deleteUser = exports.getDeleteUserPage = exports.editPassword = exports.
 const User_1 = __importDefault(require("../models/User"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+require("dotenv/config");
 const getLoginPage = (req, res, next) => {
     if (req.userId) {
         res.status(200).json({ username: req.username, userID: req.userId });
@@ -39,7 +40,7 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
             message: "Wrong password",
         });
     }
-    const token = jsonwebtoken_1.default.sign({ username: user.username, userId: user._id.toString() }, "mayakepatum", { expiresIn: "5 days" });
+    const token = jsonwebtoken_1.default.sign({ username: user.username, userId: user._id.toString() }, process.env.JWT_SECRET, { expiresIn: "5 days" });
     res.status(200).json({
         token: token,
         username: user.username,
