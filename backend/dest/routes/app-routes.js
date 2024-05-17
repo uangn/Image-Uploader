@@ -32,7 +32,6 @@ const is_auth_1 = __importDefault(require("../middlewares/is-auth"));
 const router = express_1.default.Router();
 router.get("/:username", appController.getHomepage);
 router.use(is_auth_1.default);
-// Homepage rout
 // File upload routes
 router.get("/file-upload", appController.getFileUploadPage);
 router.post("/file-upload", appController.uploadFile);
@@ -43,6 +42,11 @@ router.get("/:username/:imageId", appController.getImageDetail);
 // File edit routes
 router.get("/:username/:imageId/file-edit", appController.getFileEditPage);
 router.put("/file-edit", appController.editFile);
+// find user
+router.get("/find-user", appController.onFindUser);
+// comment
+router.get("/comment/:imageId", appController.getComments);
+router.post("/comment/:userId/:imageId/", appController.comment);
 // Delete account
 router.get("/delete-account", appController.getDelelteAccount);
 router.post("/delete-account", appController.postDelelteAccount);

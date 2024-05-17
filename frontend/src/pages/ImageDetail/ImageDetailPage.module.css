@@ -1,4 +1,9 @@
 .page {
+  margin-bottom: 100px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
 }
 .page h1 {
   text-align: center;
@@ -6,7 +11,7 @@
 
 .content-area {
   display: flex;
-  width: 80%;
+  width: 100%;
   flex-direction: row;
   padding: 2rem;
 }
@@ -29,7 +34,17 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+
+  width: 80%;
+}
+.comment {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: beige;
+}
+.comment p {
+  margin-top: -1rem;
 }
 
 .reaction {
@@ -65,12 +80,30 @@
 }
 
 .comment-area {
-  width: 80%;
-  padding: rem;
-  background-color: aqua;
+  width: 100%;
+  margin-top: 1rem;
 }
 
 .comment-area textarea {
   width: 100%;
   padding: 1rem;
+  max-width: -webkit-fill-available;
+}
+
+.image-modal {
+  position: fixed;
+  display: flex;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.96);
+  align-items: center;
+  justify-content: center;
+}
+.image-modal img {
+  max-height: 100vh;
+  height: auto;
+  max-width: 100vw;
+  position: absolute;
 }

@@ -1,12 +1,16 @@
 import { RequestHandler } from "express";
 import Image from "../models/Image";
 import User from "../models/User";
+import Comment from "../models/Comment";
 import mongoose from "mongoose";
 import AuthRequest from "models/AuthRequest";
 
 // Controller function for the homepage route
 export const getHomepage: RequestHandler = async (req, res, next) => {
   const { username } = req.params;
+  if (username.includes("find-user") || username.includes("comment")) {
+    return next();
+  }
 
   const user = await User.findOne({ username: username });
   if (!user) {
@@ -25,8 +29,6 @@ export const getFileUploadPage: RequestHandler = (req, res, next) => {
 
 // Controller function for handling file upload
 export const uploadFile: RequestHandler = (req: AuthRequest, res, next) => {
-  // console.log(req.body);
-  // console.log(req.file);
   if (req.userId !== req.body.userID) {
     return res
       .status(403)
@@ -63,6 +65,9 @@ export const uploadFile: RequestHandler = (req: AuthRequest, res, next) => {
 
 export const getImageDetail: RequestHandler = async (req, res, next) => {
   const { username, imageId } = req.params;
+  if (["comment"].includes(username)) {
+    return next();
+  }
   const user = await User.findOne({ username: username });
   if (!user) {
     return res.status(404).json({ message: "User not found" });
@@ -121,16 +126,17 @@ export const editFile: RequestHandler = async (req: AuthRequest, res, next) => {
   if (req.body.userID !== image?.postByUser?.toString()) {
     return res.status(403).json({ message: "Forbidden." });
   }
-  if (image?.postByUser?.toString() !== req.userId)
-    if (!req.file) {
-      return res.status(401).json({ message: "Image missing" });
-    }
+  if (!req.file) {
+    console.log("Use old image");
+  }
 
   if (req.body.title.trim().length < 5) {
     return res.status(401).json({ message: "Missing title" });
   }
 
-  const imageURL = "http://localhost:8080/images/" + req.file?.filename;
+  const imageURL = req.file
+    ? "http://localhost:8080/images/" + req.file?.filename
+    : image?.imageURL;
 
   await Image.findOneAndUpdate(
     { _id: req.body.imageId },
@@ -142,6 +148,60 @@ export const editFile: RequestHandler = async (req: AuthRequest, res, next) => {
   );
 
   res.status(200).json({});
+};
+
+export const getComments: RequestHandler = async (req, res, next) => {
+  const { imageId } = req.params;
+
+  const comments = await Comment.find(
+    { commentForImage: imageId },
+    "commentByUser comment reaction"
+  )
+    .lean()
+    .populate("commentByUser", "username profileImage")
+    .sort({ _id: -1 });
+
+  res.status(200).json(comments);
+};
+
+export const comment: RequestHandler = async (req: AuthRequest, res, next) => {
+  const { username, userId, imageId, commentDetail } = req.body;
+
+  if (req.userId !== userId) {
+    return res.status(403).json({ message: "Unknown user, comment failed" });
+  }
+  if (!imageId || !commentDetail) {
+    return res.status(403).json({ message: "Unknown post, comment failed" });
+  }
+
+  const comment = new Comment({
+    commentByUser: userId,
+    comment: commentDetail,
+    commentForImage: imageId,
+    createdDate: new Date().toISOString(),
+    reaction: {},
+  });
+
+  comment.save();
+
+  res.status(200).json({});
+};
+
+export const onFindUser: RequestHandler = async (req, res, next) => {
+  const queryString = req.query.q;
+
+  try {
+    const users = await User.find(
+      {
+        username: { $regex: queryString, $options: "i" },
+      },
+      "username profileImage"
+    );
+
+    res.status(200).json({ users: users });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 export const getDelelteAccount: RequestHandler = (req, res, next) => {};

@@ -12,12 +12,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postDelelteAccount = exports.getDelelteAccount = exports.editFile = exports.getFileEditPage = exports.deleteFile = exports.getImageDetail = exports.uploadFile = exports.getFileUploadPage = exports.getHomepage = void 0;
+exports.postDelelteAccount = exports.getDelelteAccount = exports.onFindUser = exports.comment = exports.getComments = exports.editFile = exports.getFileEditPage = exports.deleteFile = exports.getImageDetail = exports.uploadFile = exports.getFileUploadPage = exports.getHomepage = void 0;
 const Image_1 = __importDefault(require("../models/Image"));
 const User_1 = __importDefault(require("../models/User"));
+const Comment_1 = __importDefault(require("../models/Comment"));
 // Controller function for the homepage route
 const getHomepage = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { username } = req.params;
+    if (username.includes("find-user") || username.includes("comment")) {
+        return next();
+    }
     const user = yield User_1.default.findOne({ username: username });
     if (!user) {
         return res.status(404).json({ message: "User not found" });
@@ -34,8 +38,6 @@ exports.getFileUploadPage = getFileUploadPage;
 // Controller function for handling file upload
 const uploadFile = (req, res, next) => {
     var _a;
-    // console.log(req.body);
-    // console.log(req.file);
     if (req.userId !== req.body.userID) {
         return res
             .status(403)
@@ -67,6 +69,9 @@ const uploadFile = (req, res, next) => {
 exports.uploadFile = uploadFile;
 const getImageDetail = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, imageId } = req.params;
+    if (["comment"].includes(username)) {
+        return next();
+    }
     const user = yield User_1.default.findOne({ username: username });
     if (!user) {
         return res.status(404).json({ message: "User not found" });
@@ -113,19 +118,20 @@ const getFileEditPage = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
 exports.getFileEditPage = getFileEditPage;
 // Controller function for handling file edit
 const editFile = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _b, _c, _d;
+    var _b, _c;
     const image = yield Image_1.default.findById(req.body.imageId);
     if (req.body.userID !== ((_b = image === null || image === void 0 ? void 0 : image.postByUser) === null || _b === void 0 ? void 0 : _b.toString())) {
         return res.status(403).json({ message: "Forbidden." });
     }
-    if (((_c = image === null || image === void 0 ? void 0 : image.postByUser) === null || _c === void 0 ? void 0 : _c.toString()) !== req.userId)
-        if (!req.file) {
-            return res.status(401).json({ message: "Image missing" });
-        }
+    if (!req.file) {
+        console.log("Use old image");
+    }
     if (req.body.title.trim().length < 5) {
         return res.status(401).json({ message: "Missing title" });
     }
-    const imageURL = "http://localhost:8080/images/" + ((_d = req.file) === null || _d === void 0 ? void 0 : _d.filename);
+    const imageURL = req.file
+        ? "http://localhost:8080/images/" + ((_c = req.file) === null || _c === void 0 ? void 0 : _c.filename)
+        : image === null || image === void 0 ? void 0 : image.imageURL;
     yield Image_1.default.findOneAndUpdate({ _id: req.body.imageId }, {
         title: req.body.title,
         content: req.body.content,
@@ -134,6 +140,47 @@ const editFile = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
     res.status(200).json({});
 });
 exports.editFile = editFile;
+const getComments = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { imageId } = req.params;
+    const comments = yield Comment_1.default.find({ commentForImage: imageId }, "commentByUser comment reaction")
+        .lean()
+        .populate("commentByUser", "username profileImage")
+        .sort({ _id: -1 });
+    res.status(200).json(comments);
+});
+exports.getComments = getComments;
+const comment = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { username, userId, imageId, commentDetail } = req.body;
+    if (req.userId !== userId) {
+        return res.status(403).json({ message: "Unknown user, comment failed" });
+    }
+    if (!imageId || !commentDetail) {
+        return res.status(403).json({ message: "Unknown post, comment failed" });
+    }
+    const comment = new Comment_1.default({
+        commentByUser: userId,
+        comment: commentDetail,
+        commentForImage: imageId,
+        createdDate: new Date().toISOString(),
+        reaction: {},
+    });
+    comment.save();
+    res.status(200).json({});
+});
+exports.comment = comment;
+const onFindUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const queryString = req.query.q;
+    try {
+        const users = yield User_1.default.find({
+            username: { $regex: queryString, $options: "i" },
+        }, "username profileImage");
+        res.status(200).json({ users: users });
+    }
+    catch (error) {
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+exports.onFindUser = onFindUser;
 const getDelelteAccount = (req, res, next) => { };
 exports.getDelelteAccount = getDelelteAccount;
 const postDelelteAccount = (req, res, next) => { };

@@ -4,10 +4,12 @@ const { Schema, model } = mongoose;
 
 const CommentSchemma = new Schema({
   commentByUser: { type: Schema.Types.ObjectId, ref: "User" },
+  commentForImage: { type: Schema.Types.ObjectId, ref: "Image" },
+  comment: { type: String, required: true },
   reaction: {
-    like: { amount: Number, require: true },
-    cute: { amount: Number, require: true },
-    cool: { amount: Number, require: true },
+    like: { type: Number, default: 0 },
+    cute: { type: Number, default: 0 },
+    cool: { type: Number, default: 0 },
   },
   createdDate: { type: Date, required: true },
 });

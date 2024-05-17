@@ -41,12 +41,7 @@ const ImageUploadPage = () => {
   };
   return (
     <div className={styles.page}>
-      <h1>
-        Hello from Image Upload{" "}
-        {ctx.user
-          ? ctx.user.name.replace(" ", "_")
-          : (loader?.username.replace(" ", "_") as string)}
-      </h1>
+      <h1>Upload form</h1>
       <Form
         onSubmit={upload}
         className={styles.form}

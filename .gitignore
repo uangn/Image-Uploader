@@ -1,6 +1,7 @@
 backend/.env
 backend/node_modules
 
+**/.DS_Store
 
 frontend/node_modules
 backend/dest/images

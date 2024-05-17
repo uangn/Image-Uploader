@@ -1,0 +1,37 @@
+.search-page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+}
+
+.search-page div {
+  display: flex;
+  flex-direction: row;
+}
+
+.search-page div input {
+  width: 20rem;
+  font-size: 1.2rem;
+  padding: 5px 10px;
+}
+
+.result {
+  width: 21rem;
+  background-color: aliceblue;
+  padding: 1.5rem 2rem;
+  margin-bottom: 2px;
+  cursor: pointer;
+}
+.result:hover {
+  background-color: rgb(253, 182, 51);
+  color: white;
+}
+
+.notfound {
+  width: 21rem;
+  background-color: aliceblue;
+  padding: 1.5rem 2rem;
+  margin-bottom: 2px;
+  font-style: italic;
+}

@@ -1,8 +1,15 @@
 import React, { MouseEventHandler, useEffect, useRef, useState } from "react";
-import { useNavigate, useParams, useRouteLoaderData } from "react-router-dom";
+import {
+  useNavigate,
+  useParams,
+  useRouteLoaderData,
+  useRoutes,
+} from "react-router-dom";
 import Image from "../../models/Image";
 import styles from "./ImageDetailPage.module.css";
-import { json } from "stream/consumers";
+import ImageModal from "./ImageModal";
+import CommentPost from "../../models/CommentPost";
+import CurrentComment from "../../models/CurrentComment";
 
 const ImageDetailPage = () => {
   const { username, imageId } = useParams();
@@ -11,13 +18,14 @@ const ImageDetailPage = () => {
   const [image, setImage] = useState<Image>();
   const [content, setContent] = useState("");
   const commentRef = useRef<HTMLTextAreaElement>(null);
-  const [comment, setComment] = useState<string[]>([]);
+  const [comment, setComment] = useState<CurrentComment[]>([]);
+  const [preloadedComments, setPreComments] = useState<CommentPost[]>([]);
   const [reactTion, setReacTion] = useState<string>();
+  const [showImage, setShowImage] = useState<boolean>(false);
   const loader = useRouteLoaderData("app-root") as {
     username: string;
     userID: string;
   };
-
   useEffect(() => {
     fetch(`http://localhost:8080/${username}/${imageId}`, {
       headers: {
@@ -31,11 +39,24 @@ const ImageDetailPage = () => {
         }
         return res.json();
       })
-      .then((data) => {
+      .then(async (data) => {
         const imageDetail = data.imageDetail[0];
         document.title = imageDetail.title;
         setImage(imageDetail);
         setContent(imageDetail.content);
+        const response = await fetch(
+          `http://localhost:8080/comment/${imageId}`,
+          {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          }
+        );
+        if (!response.ok) {
+          // throw new Error();
+        }
+        const datas = await response.json();
+        setPreComments(datas);
       })
       .catch(async (err) => {
         setError(err);
@@ -49,8 +70,25 @@ const ImageDetailPage = () => {
   const addComment = () => {
     console.log(commentRef.current?.value);
     const newComment = commentRef.current?.value.trim() as string;
+    const createdComment: CurrentComment = {
+      comment: newComment,
+      username: loader.username,
+    };
     if (newComment.length >= 1) {
-      setComment((prevComment) => [...prevComment, newComment]);
+      setComment((prevComment) => [createdComment, ...prevComment]);
+      fetch(`http://localhost:8080/comment/${loader.userID}/${imageId}`, {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: loader.username,
+          userId: loader.userID,
+          imageId: imageId,
+          commentDetail: commentRef.current?.value || "",
+        }),
+      });
     }
   };
 
@@ -92,10 +130,21 @@ const ImageDetailPage = () => {
   const allowEditting = username === loader.username;
   return (
     <div className={styles.page}>
+      {showImage && (
+        <ImageModal
+          imgURL={image?.imageURL!}
+          onClick={() => setShowImage(false)}
+        />
+      )}
+
       <h3 style={{ color: "red", textAlign: "center" }}>{error}</h3>
       <h1>{image?.title}</h1>
       <div className={styles["content-area"]}>
-        <img src={image?.imageURL} alt="No cap" />
+        <img
+          src={image?.imageURL}
+          alt="No cap"
+          onClick={() => setShowImage(true)}
+        />
         <div className={styles.content}>
           {content.split("\n").map((p) => (
             <p>{p}</p>
@@ -104,7 +153,6 @@ const ImageDetailPage = () => {
       </div>
       {allowEditting && (
         <div>
-          {" "}
           <button onClick={edit}>Edit</button>
           <button onClick={deleteImage}>Delete</button>
         </div>
@@ -126,7 +174,14 @@ const ImageDetailPage = () => {
           <button onClick={addComment}>Add comment</button>
         </div>
         {comment.map((c) => (
-          <p>{c}</p>
+          <div className={styles.comment}>
+            <h3>{c.username}</h3> <p>{c.comment}</p>
+          </div>
+        ))}
+        {preloadedComments.map((c) => (
+          <div className={styles.comment}>
+            <h3>{c.commentByUser.username}</h3> <p>{c.comment}</p>
+          </div>
         ))}
       </section>
     </div>

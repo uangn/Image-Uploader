@@ -103,6 +103,9 @@ const EditImage = () => {
             defaultValue={image?.title}
           />
         </div>
+        <span style={{ fontSize: "12px", fontWeight: 200 }}>
+          You can skip this if you don't want to change image
+        </span>
         <div className={styles.inputfield}>
           <label htmlFor="imageURL">Image</label>
           <input
@@ -112,6 +115,7 @@ const EditImage = () => {
             defaultValue={image?.imageURL}
           />
         </div>
+
         <div className={styles.contentfield}>
           <label htmlFor="content">Content</label>
           <textarea
