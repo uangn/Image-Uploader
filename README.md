@@ -74,3 +74,117 @@ npm start
 5. Comment on images to interact and share your thoughts with other users.
 
 ## API Endpoints
+
+## API Endpoints
+
+### Authenticated Routes
+
+1. **Homepage**
+
+   - `GET /:username` - Get the homepage for a specific user.
+
+2. **File Upload**
+
+   - `GET /file-upload` - Get the file upload page.
+   - `POST /file-upload` - Upload a new file.
+
+3. **File Delete**
+
+   - `DELETE /file-delete` - Delete a file.
+
+4. **Image Detail**
+
+   - `GET /:username/:imageId` - Get the details of a specific image.
+
+5. **File Edit**
+
+   - `GET /:username/:imageId/file-edit` - Get the file edit page.
+   - `PUT /file-edit` - Edit a file.
+
+6. **Find User**
+
+   - `GET /find-user` - Find a user.
+
+7. **Comments**
+
+   - `GET /comment/:imageId` - Get comments for a specific image.
+   - `POST /comment/:userId/:imageId/` - Post a comment on a specific image.
+
+8. **Reactions**
+
+   - `GET /reaction/:imageId/` - Get reactions for a specific image.
+   - `POST /reaction/:imageId/` - Post a reaction to a specific image.
+
+9. **Delete Account**
+   - `GET /delete-account` - Get the delete account page.
+   - `POST /delete-account` - Delete a
+
+### App Routes
+
+1. **Homepage**
+
+   - `GET /:username` - Get the homepage for a specific user.
+
+2. **File Upload**
+
+   - `GET /file-upload` - Get the file upload page.
+   - `POST /file-upload` - Upload a new file.
+
+3. **File Delete**
+
+   - `DELETE /file-delete` - Delete a file.
+
+4. **Image Detail**
+
+   - `GET /:username/:imageId` - Get the details of a specific image.
+
+5. **File Edit**
+
+   - `GET /:username/:imageId/file-edit` - Get the file edit page.
+   - `PUT /file-edit` - Edit a file.
+
+6. **Find User**
+
+   - `GET /find-user` - Find a user.
+
+7. **Comments**
+
+   - `GET /comment/:imageId` - Get comments for a specific image.
+   - `POST /comment/:userId/:imageId/` - Post a comment on a specific image.
+
+8. **Reactions**
+
+   - `GET /reaction/:imageId/` - Get reactions for a specific image.
+   - `POST /reaction/:imageId/` - Post a reaction to a specific image.
+
+9. **Delete Account**
+   - `GET /delete-account` - Get the delete account page.
+   - `POST /delete-account` - Delete a user account.
+
+## FOLDER STRUCTURE
+
+backend/
+|
+├── dest
+├── src/
+│ ├── controllers/
+│ ├── models/
+│ ├── routes/
+│ ├── middlewares/
+│ └── app.ts
+├── .env
+├── package.json
+└── tsconfig.json
+
+frontend/
+├── src/
+│ ├── components/
+│ ├── pages/
+│ ├── routes/
+│ ├── hooks/
+│ ├── stores/
+│ ├── App.tsx
+│ ├── index.tsx
+├── public/
+├── package.json
+└── tsconfig.json
