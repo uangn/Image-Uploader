@@ -12,10 +12,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postDelelteAccount = exports.getDelelteAccount = exports.onFindUser = exports.comment = exports.getComments = exports.editFile = exports.getFileEditPage = exports.deleteFile = exports.getImageDetail = exports.uploadFile = exports.getFileUploadPage = exports.getHomepage = void 0;
+exports.postDelelteAccount = exports.getDelelteAccount = exports.postReaction = exports.getReactions = exports.onFindUser = exports.comment = exports.getComments = exports.editFile = exports.getFileEditPage = exports.deleteFile = exports.getImageDetail = exports.uploadFile = exports.getFileUploadPage = exports.getHomepage = void 0;
 const Image_1 = __importDefault(require("../models/Image"));
 const User_1 = __importDefault(require("../models/User"));
 const Comment_1 = __importDefault(require("../models/Comment"));
+const Reaction_1 = __importDefault(require("../models/Reaction"));
 // Controller function for the homepage route
 const getHomepage = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { username } = req.params;
@@ -69,7 +70,7 @@ const uploadFile = (req, res, next) => {
 exports.uploadFile = uploadFile;
 const getImageDetail = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, imageId } = req.params;
-    if (["comment"].includes(username)) {
+    if (["comment", "reaction"].includes(username)) {
         return next();
     }
     const user = yield User_1.default.findOne({ username: username });
@@ -181,6 +182,43 @@ const onFindUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.onFindUser = onFindUser;
+const getReactions = (req, res, next) => { };
+exports.getReactions = getReactions;
+const postReaction = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { imageId } = req.params;
+    const { userId, reactionType } = req.body;
+    if (req.userId !== userId) {
+        return res.status(403).json({ message: "Unknown user, comment failed" });
+    }
+    const reaction = yield Reaction_1.default.findOne({ reactedByUser: userId });
+    const react = new Reaction_1.default({
+        reactedByUser: userId,
+        createdAt: new Date(),
+        reactedforImage: imageId,
+        reactionType: reactionType,
+    });
+    // create new react
+    if (!reaction) {
+        try {
+            yield react.save();
+            return res.status(201).json({ message: "Added reaction", code: 0 });
+        }
+        catch (err) {
+            return res.status(404).json({ message: "Unauthorized. Please login" });
+        }
+    }
+    // already react
+    if (reaction.reactionType !== reactionType) {
+        reaction.reactionType = reactionType;
+        yield reaction.save();
+        return res.status(201).json({ message: "Changed reaction", code: 2 });
+    }
+    else {
+        yield Reaction_1.default.findOneAndDelete({ reactedByUser: userId });
+        return res.status(201).json({ message: "Deleted reaction", code: 1 });
+    }
+});
+exports.postReaction = postReaction;
 const getDelelteAccount = (req, res, next) => { };
 exports.getDelelteAccount = getDelelteAccount;
 const postDelelteAccount = (req, res, next) => { };

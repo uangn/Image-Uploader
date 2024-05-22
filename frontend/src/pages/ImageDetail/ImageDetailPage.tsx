@@ -10,6 +10,7 @@ import styles from "./ImageDetailPage.module.css";
 import ImageModal from "./ImageModal";
 import CommentPost from "../../models/CommentPost";
 import CurrentComment from "../../models/CurrentComment";
+import Reaction from "../../models/Reaction";
 
 const ImageDetailPage = () => {
   const { username, imageId } = useParams();
@@ -20,7 +21,7 @@ const ImageDetailPage = () => {
   const commentRef = useRef<HTMLTextAreaElement>(null);
   const [comment, setComment] = useState<CurrentComment[]>([]);
   const [preloadedComments, setPreComments] = useState<CommentPost[]>([]);
-  const [reactTion, setReacTion] = useState<string>();
+  const [reactTion, setReacTion] = useState<Reaction>();
   const [showImage, setShowImage] = useState<boolean>(false);
   const loader = useRouteLoaderData("app-root") as {
     username: string;
@@ -62,9 +63,30 @@ const ImageDetailPage = () => {
         setError(err);
       });
   }, []);
+  let response = <></>;
+  const addReaction = async (r: "like" | "cool" | "hot" | "cute") => {
+    if (!image) {
+      throw new Error("No image");
+    }
+    const updatedImage: Image = {
+      ...image,
+      reaction: { ...image!.reaction, [r]: image!.reaction[r] + 1 },
+    };
 
-  const addReaction = (r: string) => {
-    setReacTion(r);
+    const res = await fetch(`http://localhost:8080/reaction/${imageId}`, {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId: loader.userID, reactionType: r }),
+    });
+
+    if (res.ok) {
+      setImage(updatedImage);
+      const data = await res.json();
+      response = <p>{data.message}</p>;
+    }
   };
 
   const addComment = () => {
@@ -138,6 +160,7 @@ const ImageDetailPage = () => {
       )}
 
       <h3 style={{ color: "red", textAlign: "center" }}>{error}</h3>
+      {response}
       <h1>{image?.title}</h1>
       <div className={styles["content-area"]}>
         <img
@@ -162,7 +185,9 @@ const ImageDetailPage = () => {
         <div className={styles.reaction}>
           {Object.entries(image?.reaction! || {}).map((react) => (
             <button
-              onClick={(e) => addReaction(react[0])}
+              onClick={(e) =>
+                addReaction(react[0] as "like" | "cute" | "hot" | "cool")
+              }
               className={styles[react[0]]}
             >
               {react[0] + " : " + react[1]}
@@ -180,7 +205,10 @@ const ImageDetailPage = () => {
         ))}
         {preloadedComments.map((c) => (
           <div className={styles.comment}>
-            <h3>{c.commentByUser.username}</h3> <p>{c.comment}</p>
+            <h3>
+              {(c.commentByUser || { username: "account deleted" }).username}
+            </h3>{" "}
+            <p>{c.comment}</p>
           </div>
         ))}
       </section>

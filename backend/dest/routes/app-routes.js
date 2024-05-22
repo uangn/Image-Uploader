@@ -47,6 +47,9 @@ router.get("/find-user", appController.onFindUser);
 // comment
 router.get("/comment/:imageId", appController.getComments);
 router.post("/comment/:userId/:imageId/", appController.comment);
+// reaction
+router.get("/reaction/:imageId/", appController.getReactions);
+router.post("/reaction/:imageId/", appController.postReaction);
 // Delete account
 router.get("/delete-account", appController.getDelelteAccount);
 router.post("/delete-account", appController.postDelelteAccount);

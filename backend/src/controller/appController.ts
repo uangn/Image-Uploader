@@ -4,10 +4,12 @@ import User from "../models/User";
 import Comment from "../models/Comment";
 import mongoose from "mongoose";
 import AuthRequest from "models/AuthRequest";
+import Reaction from "../models/Reaction";
 
 // Controller function for the homepage route
 export const getHomepage: RequestHandler = async (req, res, next) => {
   const { username } = req.params;
+
   if (username.includes("find-user") || username.includes("comment")) {
     return next();
   }
@@ -65,7 +67,7 @@ export const uploadFile: RequestHandler = (req: AuthRequest, res, next) => {
 
 export const getImageDetail: RequestHandler = async (req, res, next) => {
   const { username, imageId } = req.params;
-  if (["comment"].includes(username)) {
+  if (["comment", "reaction"].includes(username)) {
     return next();
   }
   const user = await User.findOne({ username: username });
@@ -201,6 +203,50 @@ export const onFindUser: RequestHandler = async (req, res, next) => {
     res.status(200).json({ users: users });
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getReactions: RequestHandler = (req, res, next) => {};
+
+export const postReaction: RequestHandler = async (
+  req: AuthRequest,
+  res,
+  next
+) => {
+  const { imageId } = req.params;
+  const { userId, reactionType } = req.body;
+
+  if (req.userId !== userId) {
+    return res.status(403).json({ message: "Unknown user, comment failed" });
+  }
+
+  const reaction = await Reaction.findOne({ reactedByUser: userId });
+
+  const react = new Reaction({
+    reactedByUser: userId,
+    createdAt: new Date(),
+    reactedforImage: imageId,
+    reactionType: reactionType,
+  });
+
+  // create new react
+  if (!reaction) {
+    try {
+      await react.save();
+      return res.status(201).json({ message: "Added reaction", code: 0 });
+    } catch (err) {
+      return res.status(404).json({ message: "Unauthorized. Please login" });
+    }
+  }
+
+  // already react
+  if (reaction.reactionType !== reactionType) {
+    reaction.reactionType = reactionType;
+    await reaction.save();
+    return res.status(201).json({ message: "Changed reaction", code: 2 });
+  } else {
+    await Reaction.findOneAndDelete({ reactedByUser: userId });
+    return res.status(201).json({ message: "Deleted reaction", code: 1 });
   }
 };
 
