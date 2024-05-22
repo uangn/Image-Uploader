@@ -40,9 +40,9 @@ This application is a full-stack web application built with the MERN stack (Mong
 ### Steps
 
 1. Clone the repository:
-   mkdir image-uploader
-   cd image-uploader
-   git clone https://github.com/uangn/Image-Uploader .
+   - mkdir image-uploader
+   - cd image-uploader
+   - git clone https://github.com/uangn/Image-Uploader .
 2. Install dependencies for the backend:
    Copy code
    cd backend
