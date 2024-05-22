@@ -55,15 +55,15 @@ This application is a full-stack web application built with the MERN stack (Mong
 
 Create a .env file in the backend directory with the following contents:
 
-MONGO_URI=your_mongo_db_connection_string
-JWT_SECRET=your_jwt_secret 5. Start the backend server:
-cd backend
-tsc -w
-npm start
+MONGO_URI=your_mongo_db_connection_string <br>
+JWT_SECRET=your_jwt_secret <br> 5. Start the backend server:<br>
+cd backend<br>
+tsc -w<br>
+npm start<br>
 
-6. Start the frontend development server:
-   cd frontend
-   npm start
+6. Start the frontend development server:<br>
+   cd frontend<br>
+   npm start<br>
 
 ## Usage
 
@@ -72,8 +72,6 @@ npm start
 3. Browse user pages and view their uploaded images.
 4. React to images by liking or disliking them using the reaction buttons.
 5. Comment on images to interact and share your thoughts with other users.
-
-## API Endpoints
 
 ## API Endpoints
 
@@ -117,7 +115,7 @@ npm start
 
 9. **Delete Account**
    - `GET /delete-account` - Get the delete account page.
-   - `POST /delete-account` - Delete a
+   - `POST /delete-account` - Delete account
 
 ### App Routes
 
@@ -163,28 +161,29 @@ npm start
 
 ## FOLDER STRUCTURE
 
-backend/
-|
-├── dest
-├── src/
-│ ├── controllers/
-│ ├── models/
-│ ├── routes/
-│ ├── middlewares/
-│ └── app.ts
-├── .env
-├── package.json
-└── tsconfig.json
-
-frontend/
-├── src/
-│ ├── components/
-│ ├── pages/
-│ ├── routes/
-│ ├── hooks/
-│ ├── stores/
-│ ├── App.tsx
-│ ├── index.tsx
-├── public/
-├── package.json
-└── tsconfig.json
+<br>
+backend/   <br>             
+├── dest<br>
+├── src/<br>
+| ├── controllers/<br>
+| ├── models/<br>
+| ├── routes/<br>
+| ├── middlewares/<br>
+| └── app.ts<br>
+├── .env<br>
+├── package.json<br>
+└── tsconfig.json<br>
+<br>
+frontend/<br>
+├── src/<br>
+│ ├── components/<br>
+│ ├── pages/<br>
+│ ├── routes/<br>
+│ ├── hooks/<br>
+│ ├── stores/<br>
+│ ├── App.tsx<br>
+│ ├── index.tsx<br>
+├── public/<br>
+├── package.json<br>
+└── tsconfig.json<br>
+<br>
