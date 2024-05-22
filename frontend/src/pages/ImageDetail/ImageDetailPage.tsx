@@ -1,10 +1,5 @@
 import React, { MouseEventHandler, useEffect, useRef, useState } from "react";
-import {
-  useNavigate,
-  useParams,
-  useRouteLoaderData,
-  useRoutes,
-} from "react-router-dom";
+import { useNavigate, useParams, useRouteLoaderData } from "react-router-dom";
 import Image from "../../models/Image";
 import styles from "./ImageDetailPage.module.css";
 import ImageModal from "./ImageModal";
