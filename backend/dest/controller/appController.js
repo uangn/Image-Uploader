@@ -182,7 +182,32 @@ const onFindUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.onFindUser = onFindUser;
-const getReactions = (req, res, next) => { };
+const getReactions = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { imageId } = req.params;
+    const userId = req.get("requestUser");
+    let isReacted = false;
+    let reactionType = "";
+    const reactions = yield Reaction_1.default.find({ reactedforImage: imageId });
+    const initial = {
+        like: 0,
+        hot: 0,
+        cute: 0,
+        cool: 0,
+    };
+    reactions.reduce((prev, curr) => {
+        var _a;
+        prev[curr.reactionType]++;
+        if (((_a = curr.reactedByUser) === null || _a === void 0 ? void 0 : _a.toString()) === userId) {
+            isReacted = true;
+            reactionType = curr.reactionType;
+        }
+        return prev;
+    }, initial);
+    res.status(200).json({
+        reactions: initial,
+        isReacted: { hasReaction: isReacted, type: reactionType },
+    });
+});
 exports.getReactions = getReactions;
 const postReaction = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { imageId } = req.params;

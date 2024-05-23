@@ -206,7 +206,36 @@ export const onFindUser: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const getReactions: RequestHandler = (req, res, next) => {};
+export const getReactions: RequestHandler = async (
+  req: AuthRequest,
+  res,
+  next
+) => {
+  const { imageId } = req.params;
+  const userId = req.get("requestUser");
+  let isReacted = false;
+  let reactionType = "";
+  const reactions = await Reaction.find({ reactedforImage: imageId });
+  const initial = {
+    like: 0,
+    hot: 0,
+    cute: 0,
+    cool: 0,
+  };
+
+  reactions.reduce((prev, curr) => {
+    prev[curr.reactionType as "cool"]++;
+    if (curr.reactedByUser?.toString() === userId) {
+      isReacted = true;
+      reactionType = curr.reactionType;
+    }
+    return prev;
+  }, initial);
+  res.status(200).json({
+    reactions: initial,
+    isReacted: { hasReaction: isReacted, type: reactionType },
+  });
+};
 
 export const postReaction: RequestHandler = async (
   req: AuthRequest,

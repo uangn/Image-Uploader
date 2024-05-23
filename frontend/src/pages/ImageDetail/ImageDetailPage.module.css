@@ -47,6 +47,26 @@
   margin-top: -1rem;
 }
 
+.editButton {
+  padding: 1rem 2rem;
+  font-size: 2rem;
+  background-color: orange;
+  color: white;
+  margin: 5px solid black;
+  border-radius: 1rem;
+  margin-right: 3rem;
+}
+
+.deleteButton {
+  padding: 1rem;
+  font-size: 2rem;
+  background-color: red;
+  color: white;
+  margin: 5px solid black;
+  border-radius: 1rem;
+  margin-left: 3rem;
+}
+
 .reaction {
   display: flex;
   width: 70%;
@@ -65,6 +85,7 @@
   border: none;
   color: white;
   width: 25%;
+  transition: transform 0.3s;
 }
 .like {
   background-color: rgb(38, 132, 255);
@@ -73,7 +94,7 @@
   background-color: rgb(255, 144, 163);
 }
 .hot {
-  background-color: rgb(255, 0, 43);
+  background-color: rgb(247, 81, 109);
 }
 .cool {
   background-color: gold;

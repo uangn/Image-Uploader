@@ -1,6 +1,6 @@
 export default interface Reaction {
-  reactedByUser: string;
-  reactedforImage: string;
-  reactionType: string;
-  createdAt: string;
+  like: number;
+  hot: number;
+  cute: number;
+  cool: number;
 }

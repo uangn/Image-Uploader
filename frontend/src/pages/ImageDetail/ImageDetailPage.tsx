@@ -17,6 +17,10 @@ const ImageDetailPage = () => {
   const [comment, setComment] = useState<CurrentComment[]>([]);
   const [preloadedComments, setPreComments] = useState<CommentPost[]>([]);
   const [reactTion, setReacTion] = useState<Reaction>();
+  const [isReacted, setIsReacted] = useState<{
+    hasReaction: boolean;
+    type: string;
+  }>({ hasReaction: false, type: "" });
   const [showImage, setShowImage] = useState<boolean>(false);
   const loader = useRouteLoaderData("app-root") as {
     username: string;
@@ -38,6 +42,7 @@ const ImageDetailPage = () => {
       .then(async (data) => {
         const imageDetail = data.imageDetail[0];
         document.title = imageDetail.title;
+
         setImage(imageDetail);
         setContent(imageDetail.content);
         const response = await fetch(
@@ -49,13 +54,29 @@ const ImageDetailPage = () => {
           }
         );
         if (!response.ok) {
-          // throw new Error();
+          // throw new Error("Failed to fetch comments");
         }
         const datas = await response.json();
         setPreComments(datas);
+
+        const reactRes = await fetch(
+          `http://localhost:8080/reaction/${imageId}`,
+          {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+              requestUser: loader.userID,
+            },
+          }
+        );
+        if (!reactRes.ok) {
+          // throw new Error("No reaction");
+        }
+        const reactions = await reactRes.json();
+        setReacTion(reactions.reactions);
+        setIsReacted(reactions.isReacted);
       })
       .catch(async (err) => {
-        setError(err);
+        setError(err.message);
       });
   }, []);
   let response = <></>;
@@ -63,11 +84,6 @@ const ImageDetailPage = () => {
     if (!image) {
       throw new Error("No image");
     }
-    const updatedImage: Image = {
-      ...image,
-      reaction: { ...image!.reaction, [r]: image!.reaction[r] + 1 },
-    };
-
     const res = await fetch(`http://localhost:8080/reaction/${imageId}`, {
       method: "POST",
       headers: {
@@ -77,15 +93,34 @@ const ImageDetailPage = () => {
       body: JSON.stringify({ userId: loader.userID, reactionType: r }),
     });
 
-    if (res.ok) {
-      setImage(updatedImage);
-      const data = await res.json();
-      response = <p>{data.message}</p>;
+    if (!res.ok) {
+      setError("Can not react");
+      return;
+    }
+    if (isReacted.hasReaction) {
+      const newReaction = { ...reactTion! };
+
+      if (isReacted.type === r) {
+        newReaction[r]--;
+        setIsReacted({ hasReaction: false, type: "" });
+      } else {
+        setIsReacted({ hasReaction: true, type: r });
+        newReaction[isReacted.type as "like"]--;
+        newReaction[r]++;
+      }
+
+      setReacTion((prev) => {
+        return { ...newReaction };
+      });
+    } else {
+      setIsReacted({ hasReaction: true, type: r });
+      setReacTion((prev) => {
+        return { ...prev!, [r]: prev![r] + 1 };
+      });
     }
   };
 
   const addComment = () => {
-    console.log(commentRef.current?.value);
     const newComment = commentRef.current?.value.trim() as string;
     const createdComment: CurrentComment = {
       comment: newComment,
@@ -171,21 +206,31 @@ const ImageDetailPage = () => {
       </div>
       {allowEditting && (
         <div>
-          <button onClick={edit}>Edit</button>
-          <button onClick={deleteImage}>Delete</button>
+          <button className={styles.editButton} onClick={edit}>
+            Edit
+          </button>
+          <button className={styles.deleteButton} onClick={deleteImage}>
+            Delete
+          </button>
         </div>
       )}
 
       <section className={styles.comments}>
         <div className={styles.reaction}>
-          {Object.entries(image?.reaction! || {}).map((react) => (
+          {Object.entries(reactTion || {}).map(([reactionType, count]) => (
             <button
-              onClick={(e) =>
-                addReaction(react[0] as "like" | "cute" | "hot" | "cool")
+              key={reactionType}
+              style={
+                isReacted?.type === reactionType
+                  ? { textAlign: "center", color: "brown" }
+                  : {}
               }
-              className={styles[react[0]]}
+              onClick={() =>
+                addReaction(reactionType as "like" | "cute" | "hot" | "cool")
+              }
+              className={styles[reactionType]}
             >
-              {react[0] + " : " + react[1]}
+              {reactionType + " : " + count}
             </button>
           ))}
         </div>
